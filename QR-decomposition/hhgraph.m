@@ -1,55 +1,80 @@
-function householder_full()
-    % Interaktív rész: grafikus pontbekérés és transzformáció vizualizálása
+function hhgraph()
+    % Pontok terminálból való bekérése
+    disp('Adja meg az első pont koordinátáit (a):');
+    a = input('Formátum [x y z]: ');
+    disp('Adja meg a második pont koordinátáit (b):');
+    b = input('Formátum [x y z]: ');
+
+    % Householder vektor kiszámítása
+    v = b - a;
+    norm_v = norm(v);
+    u = v / norm_v;  % Normalizált Householder vektor
+
+    % Householder mátrix meghívása
+    H = householder_function(a, b);
+
+    % További pont bekérése
+    disp('Adjon meg egy új pontot a transzformációhoz:');
+    new_point = input('Formátum [x y z]: ');
+
+    % Transzformált pont kiszámítása
+    transformed_point = H * new_point';
+
+    % Grafikus kirajzolás
     figure;
     hold on;
     axis equal;
     grid on;
-    
-    % Pontok grafikus bekérése
-    [x, y] = ginput(2);
-    P = [x(1); y(1)];
-    P_prime = [x(2); y(2)];
-    
-    % Householder mátrix meghívása
-    H = householder(P, P_prime);
-    
-    % További pont bekérése és ábrázolása
-    [x_new, y_new] = ginput(1);
-    new_point = [x_new; y_new];
-    
-    % Transzformált pont kiszámítása
-    transformed_point = H * new_point;
-    
-    % Pontok és hipersík rajzolása
-    plot(x, y, 'bo', 'MarkerFaceColor', 'b');
-    line([P(1) P_prime(1)], [P(2) P_prime(2)], 'Color', 'r', 'LineWidth', 2);
-    plot(new_point(1), new_point(2), 'go', 'MarkerFaceColor', 'g');
-    plot(transformed_point(1), transformed_point(2), 'ro', 'MarkerFaceColor', 'r');
-    
+    view(3);  % 3D nézet beállítása
+
+    % Hipersík megjelenítése
+    [X, Y] = meshgrid(linspace(-10, 10, 40));  % Sík X és Y koordinátái
+    Z = (-u(1) * X - u(2) * Y) / u(3);  % Sík Z koordinátája
+    surf(X, Y, Z, 'FaceAlpha', 0.5, 'EdgeColor', 'none');  % Sík ábrázolása
+
+    % Pontok ábrázolása
+    plot3(a(1), a(2), a(3), 'bo', 'MarkerFaceColor', 'b');
+    plot3(b(1), b(2), b(3), 'bo', 'MarkerFaceColor', 'b');
+    plot3(new_point(1), new_point(2), new_point(3), 'go', 'MarkerFaceColor', 'g');
+    plot3(transformed_point(1), transformed_point(2), transformed_point(3), 'ro', 'MarkerFaceColor', 'r');
+
+    % Tengelyek címkézése
+    xlabel('X tengely');
+    ylabel('Y tengely');
+    zlabel('Z tengely');
+
     % Címkék hozzáadása
-    legend('Eredeti pontok', 'Hipersík', 'Új pont', 'Transzformált pont');
+    legend('Hipersík', 'Eredeti pont (a)', 'Új pont (b)', 'Tetszőleges pont', 'Tetszőleges pont Householder transzformáltja');
     hold off;
-
-    function H = householder(P, P_prime)
-        % Ellenőrizzük, hogy a P és P_prime azonos méretű-e
-        if length(P) ~= length(P_prime)
-            error('P és P_prime méretének egyeznie kell!');
-        end
-
-        % A tükrözési vektor kiszámítása
-        u = P - P_prime;
-
-        % Sigma kiszámítása, figyelembe véve az előjelet a numerikus stabilitás érdekében
-        sigma = norm(u);
-        if u(1) < 0
-            sigma = -sigma;
-        end
-
-        % Normalizált tükrözési vektor
-        v = u + sigma * [1; zeros(length(u) - 1, 1)];
-        v = v / norm(v);
-
-        % Householder mátrix kiszámítása
-        H = eye(length(P)) - 2 * (v * v');
-    end
 end
+
+
+
+function H = householder_function(a, b)
+    % Az egész feladat a tankönyv (példatár) alapján készült.
+    disp("Ön a következő vektorokat adta meg: ");
+    disp(a);
+    disp(b);
+
+    if ((norm(a, 2) ~= norm(b, 2)) || (length(a) ~= length(b)))
+        error('A vektorok dimenziói és/vagy normái nem egyeznek!');
+    end
+    
+    e_vector = zeros(length(a), 1);
+    e_vector(1) = 1;
+    
+    sigma = -sign(a(1))*norm(a, 2);
+    v_denominator = a-sigma*e_vector;
+    v_nominator = norm(v_denominator, 2);
+    v = v_denominator/v_nominator;
+    
+    H = eye(length(v)) - 2 * (v * v');
+end
+
+
+% A konzolos bekérés szándékos!
+% Az alábbi adatokkal lehet pl. gyorsan tesztelni:
+% Jegyzetből: 32.o./63., megoldás a 84.oldalon.
+% a = [2 1 1]
+% b = [-sqrt(6) 0 0]
+% P = tetszőleges

@@ -6,6 +6,9 @@ function [Q, R] = gramschmidt_function(A)
     %   Q - Ortogonális mátrix
     %   R - Felső háromszög mátrix, melyekre A = Q * R
 
+    disp("Ön a következő mátrixot adta meg:");
+    disp(A);
+
     % Ellenőrzés: a mátrix oszlopai lineárisan függetlenek-e
     if rank(A) < size(A, 2)
         error('A mátrix oszlopai lineárisan függetlenek kell legyenek a QR-felbontáshoz.');
@@ -28,16 +31,17 @@ function [Q, R] = gramschmidt_function(A)
         R(j, j) = norm(v);
         Q(:, j) = v / R(j, j);
     end
+
+    % Eredmények kiírása
+    disp('Q ortogonális mátrix:');
+    disp(Q);
+    disp('R felsőháromszög mátrix:');
+    disp(R);
+    disp('Ellenőrzés, hogy A = Q * R:');
+    disp(Q * R);
+
 end
 
-% A mátrix definiálása
-A = [1, 2, 4; 3, 8, 14; 2, 6, 13];
-
-% QR-felbontás Gram-Schmidt ortogonalizációval
+% PÉLDA HASZNÁLAT! (Kiadott QR felbontás pdf alapján.)
+A = [1, 2, 3; 0, 0, 1; 2, 3, 4];
 [Q, R] = gramschmidt_function(A);
-
-% Eredmények kiírása
-disp('Q mátrix:');
-disp(Q);
-disp('R mátrix:');
-disp(R);

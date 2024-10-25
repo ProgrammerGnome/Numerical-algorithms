@@ -1,4 +1,8 @@
 function [Q, R] = hhalg_function(A)
+
+    disp("Ön a következő mátrixot adta meg:");
+    disp(A);
+
     % Ellenőrizzük, hogy A négyzetes mátrix-e
     [m, n] = size(A);
     if m ~= n
@@ -26,25 +30,22 @@ function [Q, R] = hhalg_function(A)
         Q = Q * Hk';
     end
 
-    % Az utolsó lépésben, ha szükséges, normalizáljuk a végleges R mátrixot
+    % Az utolsó lépésben, ha szükséges, normalizáljuk a végleges R mátrixot.
     for j = 1:n
         if R(j, j) < 0
             R(j, j:n) = -R(j, j:n);
             Q(:, j) = -Q(:, j);
         end
     end
+
+    disp('Q ortogonális mátrix:');
+    disp(Q);
+    disp('R felsőháromszög mátrix:');
+    disp(R);
+    disp('Ellenőrzés, hogy A = Q * R:');
+    disp(Q * R);
 end
 
-% Definiáljunk egy tesztmátrixot
-A = [12 -51 4; 6 167 -68; -4 24 -41];
-
-% QR-felbontás elvégzése
+% PÉLDA HASZNÁLAT! (Kiadott QR felbontás pdf alapján.)
+A = [1 2 3; 0 0 1; 2 3 4];
 [Q, R] = hhalg_function(A);
-
-% Kiíratás az eredményekről
-disp('Q mátrix:');
-disp(Q);
-disp('R mátrix:');
-disp(R);
-disp('Ellenőrzés, hogy A = Q * R:');
-disp(Q * R);

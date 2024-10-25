@@ -1,31 +1,29 @@
-function H = householder_function(P, P_prime)
-    % Ellenőrizzük, hogy a P és P_prime azonos méretű-e
-    if length(P) ~= length(P_prime)
-        error('P és P_prime méretének egyeznie kell!');
+function H = householder_function(a, b)
+
+    % Az egész feladat a tankönyv (példatár) alapján készült.
+    disp("Ön a következő vektorokat adta meg: ");
+    disp(a);
+    disp(b);
+
+    if ((norm(a, 2) ~= norm(b, 2)) || (length(a) ~= length(b)))
+        error('A vektorok dimenziói és/vagy normái nem egyeznek!');
     end
     
-    % A tükrözési vektor kiszámítása
-    u = P - P_prime;
+    e_vector = zeros(length(a), 1);
+    e_vector(1) = 1;
     
-    % Sigma kiszámítása, figyelembe véve az előjelet a numerikus stabilitás érdekében
-    sigma = norm(u);
-    if u(1) < 0
-        sigma = -sigma;
-    end
+    sigma = -sign(a(1))*norm(a, 2);
+    v_denominator = a-sigma*e_vector;
+    v_nominator = norm(v_denominator, 2);
+    v = v_denominator/v_nominator;
     
-    % Normalizált tükrözési vektor
-    v = u + sigma * [1; zeros(length(u) - 1, 1)];
-    v = v / norm(v);
-    
-    % Householder mátrix kiszámítása
-    H = eye(length(P)) - 2 * (v * v');
+    H = eye(length(v)) - 2 * (v * v');
 end
 
-% Példa meghívás a Householder transzformáció meghatározásához
-P = [1; 2; 3];
-P_prime = [4; 5; 6];
-H = householder_function(P, P_prime);
+% PÉLDA HASZNÁLAT! (Jegyzetből: 32.o./63., megoldás a 84.oldalon.)
+a = [2; 1; 1];
+b = [-sqrt(6); 0; 0];
+H = householder_function(a, b);
 
-% Householder-transzformáció mátrix kiírása
 disp('A Householder-transzformáció mátrixa:');
 disp(H);
