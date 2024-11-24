@@ -58,8 +58,6 @@ function [num_elements, M_inf, eps0, eps1] = fl2(t, k1, k2)
     fprintf('ε1 (legkisebb pozitív denormalizált szám): %.10f\n', eps1);
 end
 
-
-
 % FÜGGVÉNYHÍVÁS!
 t = 7;
 k1 = -2;
